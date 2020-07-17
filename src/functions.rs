@@ -127,9 +127,9 @@ fn decode_length_header(header: Vec<u8>) -> usize {
     }
     length
 }
-fn encode_bytes(
+fn encode_bytes<'a, T: Iterator<Item = &'a usize>>(
     payload: &Vec<u8>,
-    sequencer: &mut dyn Iterator<Item = &usize>,
+    sequencer: &mut T,
     container: &mut Vec<u8>,
 ) -> Result<(), String> {
     for byte in payload {
@@ -143,9 +143,9 @@ fn encode_bytes(
     }
     Ok(())
 }
-fn decode_bytes(
+fn decode_bytes<'a, T: Iterator<Item = &'a usize>>(
     length: usize,
-    sequencer: &mut dyn Iterator<Item = &usize>,
+    sequencer: &mut T,
     container: &Vec<u8>,
 ) -> Result<Vec<u8>, String> {
     let mut bytes = Vec::new();
