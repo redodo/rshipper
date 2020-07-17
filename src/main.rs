@@ -34,7 +34,7 @@ struct Load {
 struct Unload {
     container: String,
     #[clap(short, long)]
-    output: Option<String>,
+    output: String,
 }
 
 #[derive(Clap)]
@@ -89,17 +89,8 @@ fn main() -> Result<(), String> {
             let password = functions::prompt_password(false)?;
 
             let payload = functions::decode(&password, &mut container);
-            match c.output {
-                Some(filename) => {
-                    let mut handle = File::create(filename).unwrap();
-                    handle.write_all(&payload[..]).unwrap();
-                }
-                None => {
-                    let stdout = io::stdout();
-                    let mut handle = stdout.lock();
-                    handle.write_all(&payload[..]).unwrap();
-                }
-            }
+            let mut handle = File::create(c.output).unwrap();
+            handle.write_all(&payload[..]).unwrap();
         }
         Command::Expose(c) => {
             let img = image::open(c.source).unwrap();
